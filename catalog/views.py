@@ -8,7 +8,7 @@ def product_list(request):
     context = {
         "products": products
     }
-    return render(request, 'home.html', context)
+    return render(request, 'products_list.html', context)
 
 def contacts(request):
     if request.method == 'POST':
