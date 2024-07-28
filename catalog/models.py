@@ -44,3 +44,10 @@ class Blog(models.Model):
     is_published = models.BooleanField(default=True, verbose_name='Опубликованно')
     views_count = models.IntegerField(default=0, verbose_name='Просмотры')
 
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        verbose_name = 'Статья'
+        verbose_name_plural = 'Статьи'
+        ordering = ('title', 'content')
