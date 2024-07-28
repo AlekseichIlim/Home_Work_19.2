@@ -30,11 +30,13 @@ class ProductListView(ListView):
 class ContactsView(TemplateView):
     template_name = 'catalog/contacts.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(ContactsView, self).get_context_data(**kwargs)
-        contacts = self.request.POST.get('name')
-        print(contacts)
-        return context
+    def post(self, request):
+        if self.request.method == 'POST':
+            name = self.request.POST.get('name')
+            phone = request.POST.get('phone')
+            message = request.POST.get('message')
+            print(f'{name}, контактный телефон: {phone}\nСообщение: {message}')
+        return render(request, 'catalog/contacts.html')
 
 
 # def product_detail(request, pk):
@@ -51,6 +53,12 @@ class ProductDetailView(DetailView):
 
 class BlogListView(ListView):
     model = Blog
+
+    def get_queryset(self, *args, **kwargs):
+        """выводит только опубликованные блоги"""
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_published=True)
+        return queryset
 
 
 class BlogCreateView(CreateView):
@@ -70,11 +78,8 @@ class BlogCreateView(CreateView):
 class BlogDetailView(DetailView):
     model = Blog
 
-    # if object.views_count > 10:
-    #     send_mail('Привет', f'Блог {object.title} просмотрена более 10 раз!', "431410@mail.ru", ["dj@mail.ru"],
-    #               fail_silently=False)
     def get_object(self, queryset=None):
-        """счетчик просмотров блога"""
+        """Cчетчик просмотров блога"""
         self.object = super().get_object(queryset)
         self.object.views_count += 1
         self.object.save()
