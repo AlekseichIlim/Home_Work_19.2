@@ -1,11 +1,14 @@
 {% extends 'catalog/home.html' %}
-
 {% block content %}
-<div class="col-12">
+<div class="container">
     <form method="post" enctype="multipart/form-data">
-        <!--enctype="multipart/form-data" необходимо прописывать чтобы была возможность загружать не только текст но и файлы>-->
         <div class="col-12">
+
+
             <div class="row">
+
+
+                <!--enctype="multipart/form-data" необходимо прописывать чтобы была возможность загружать не только текст но и файлы>-->
                 <div class="col-6">
                     <div class="card">
                         <div class="card-header">
@@ -30,22 +33,19 @@
                         </div>
                     </div>
                 </div>
-                <!--                <div class="col-6">-->
-                <!--&lt;!&ndash;                    <div class="card">&ndash;&gt;-->
-                <!--&lt;!&ndash;                         <div class="card-header">&ndash;&gt;-->
-                <!--&lt;!&ndash;                            <h3 class="card-title">Предметы студента</h3>&ndash;&gt;-->
-                <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
-                <!--&lt;!&ndash;                        <div class="card-body">&ndash;&gt;-->
-                <!--&lt;!&ndash;                            {{ formset.management_form }}&ndash;&gt;-->
-                <!--&lt;!&ndash;                            {% for form in formset.forms %}&ndash;&gt;-->
-                <!--&lt;!&ndash;                                {{ form.as_p }}&ndash;&gt;-->
-                <!--&lt;!&ndash;                                {% if not forloop.last %}&ndash;&gt;-->
-                <!--&lt;!&ndash;                                <hr>&ndash;&gt;-->
-                <!--&lt;!&ndash;                                {% endif %}&ndash;&gt;-->
-                <!--&lt;!&ndash;                            {% endfor %}&ndash;&gt;-->
-                <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
-                <!--&lt;!&ndash;                    </div>&ndash;&gt;-->
-                <!--                </div>-->
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                            {{ form.as_p }}
+                            {% if not forloop.last %}
+                            <hr>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

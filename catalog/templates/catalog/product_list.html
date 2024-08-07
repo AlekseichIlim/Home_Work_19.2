@@ -11,6 +11,7 @@
         <div class="card-header">
             <img class="card-img-top" src="{{ product.picture | media_filter }}">
             <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+            <h8 class="my-0 font-weight-normal">Версия: {{ product.active_version }}</h8>
         </div>
         <div class="card-body">
             <h1 class="card-title pricing-card-title">{{ product.price }} р.</h1>
