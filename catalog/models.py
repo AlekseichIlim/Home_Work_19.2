@@ -23,8 +23,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name='Категория', **NULLABLE,
                                  related_name='product')
     price = models.IntegerField(verbose_name='Цена')
-    created_at = models.DateField(verbose_name='Дата создания')
-    updated_at = models.DateField(verbose_name='Дата изменения')
+    created_at = models.DateField(auto_now=True, verbose_name='Дата создания')
+    updated_at = models.DateField(auto_now=True, verbose_name='Дата изменения')
 
     def __str__(self):
         return f'{self.name} - {self.category}'
