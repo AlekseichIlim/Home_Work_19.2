@@ -23,8 +23,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name='Категория', **NULLABLE,
                                  related_name='product')
     price = models.IntegerField(verbose_name='Цена')
-    created_at = models.DateField(verbose_name='Дата создания')
-    updated_at = models.DateField(verbose_name='Дата изменения')
+    created_at = models.DateField(auto_now=True, verbose_name='Дата создания')
+    updated_at = models.DateField(auto_now=True, verbose_name='Дата изменения')
 
     def __str__(self):
         return f'{self.name} - {self.category}'
@@ -51,3 +51,17 @@ class Blog(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
         ordering = ('title', 'content')
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+    version = models.FloatField(max_length=10, verbose_name='Версия')
+    name_version = models.CharField(max_length=100, verbose_name='Название версии', **NULLABLE)
+    sign_version = models.BooleanField(default=True, verbose_name='Активна')
+
+    def __str__(self):
+        return f'{self.version}'
+
+    class Meta:
+        verbose_name = 'Версия'
+        verbose_name_plural = 'Версии'
