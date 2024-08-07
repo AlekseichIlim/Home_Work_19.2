@@ -4,10 +4,6 @@ from catalog.models import Product, Version
 
 valid_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
-
-
-
-
 class StyleMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
