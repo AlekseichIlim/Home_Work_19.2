@@ -5,7 +5,22 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 from pytils.translit import slugify
 from django.core.mail import send_mail
 
+from catalog.forms import ProductForm
 from catalog.models import Product, Blog
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:product_list')
+
+
 
 
 # def product_list(request):
