@@ -60,7 +60,7 @@ class Version(models.Model):
     sign_version = models.BooleanField(default=True, verbose_name='Активна')
 
     def __str__(self):
-        return self.version
+        return f'{self.version}'
 
     class Meta:
         verbose_name = 'Версия'

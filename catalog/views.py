@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.http import request
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -5,8 +6,8 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 from pytils.translit import slugify
 from django.core.mail import send_mail
 
-from catalog.forms import ProductForm
-from catalog.models import Product, Blog
+from catalog.forms import ProductForm, VersionForm
+from catalog.models import Product, Blog, Version
 
 
 class ProductCreateView(CreateView):
@@ -20,7 +21,25 @@ class ProductUpdateView(UpdateView):
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+        return context_data
 
+    def form_valid(self, form):
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+        if form.is_valid() and formset.is_valid:
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
 # def product_list(request):
@@ -32,6 +51,19 @@ class ProductUpdateView(UpdateView):
 
 class ProductListView(ListView):
     model = Product
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        products = self.get_queryset(*args, **kwargs)
+        for product in products:
+            version = Version.objects.filter(product=product)
+            active_version = version.filter(sign_version=True)
+            if active_version:
+                product.active_version = active_version.last().version
+            else:
+                product.active_version = 'Нет активной версии'
+        context_data['object_list'] = products
+        return context_data
 
 
 # def contacts(request):
