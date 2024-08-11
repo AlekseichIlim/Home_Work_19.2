@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # EMAIL_HOST_PASSWORD = 'Kesla001+'
 # EMAIL_USE_TLS = True
 # EMAIL_USE_SSL = False
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
