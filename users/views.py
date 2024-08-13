@@ -25,7 +25,8 @@ class UserCreateView(CreateView):
         user.token = token
         user.save()
         host = self.request.get_host()
-        url = f'http://{host}/users/email.confirm/{token}'
+        url = self.request.buid_absolute_uri(reverse('users:email-confirm', args=(user.token,)))
+        # url = f'http://{host}/users/email.confirm/{token}'
         send_mail(
             subject='Подтверждение почты',
             message=f'Для подтверждения почты перейдите по ссылке: {url}',
@@ -48,19 +49,31 @@ class GeneratePasswordView(PasswordResetView):
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
-        email = form.cleaned_data['email']
-        user = User.objects.get(email=email)
+
+        user = User.objects.filter(email=form.cleaned_data['email']).first()
         if user:
-            password = secrets.token_hex(10)
-            user.set_password(password)
+            new_password = User.objects.make_random_password()
+            user.set_password(new_password)
             user.save()
-        send_mail(
+        user.email_user(
             subject='Смена пароля',
-            message=f'Ваш новый пароль: {password}',
-            from_email=EMAIL_HOST_USER,
-            recipient_list=[user.email]
+            message=f'Ваш новый пароль: {new_password}',
         )
         return redirect(reverse('users:login'))
+
+        # email = form.cleaned_data['email']
+        # user = User.objects.get(email=email)
+        # if user:
+        #     password = secrets.token_hex(10)
+        #     user.set_password(password)
+        #     user.save()
+        # send_mail(
+        #     subject='Смена пароля',
+        #     message=f'Ваш новый пароль: {password}',
+        #     from_email=EMAIL_HOST_USER,
+        #     recipient_list=[user.email]
+        # )
+        # return redirect(reverse('users:login'))
 
 
 # def recovery_pass(request):
