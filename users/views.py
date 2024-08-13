@@ -1,5 +1,7 @@
 import secrets
 
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import PasswordResetView
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -9,6 +11,8 @@ from users.forms import UserRegisterForm
 from users.models import User
 
 from config.settings import EMAIL_HOST_USER
+
+
 class UserCreateView(CreateView):
     model = User
     form_class = UserRegisterForm
@@ -30,8 +34,54 @@ class UserCreateView(CreateView):
         )
         return super().form_valid(form)
 
+
 def email_verification(request, token):
     user = get_object_or_404(User, token=token)
     user.is_active = True
     user.save()
     return redirect(reverse('users:login'))
+
+
+class GeneratePasswordView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = 'users/reset_password.html'
+    success_url = reverse_lazy('users:login')
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        user = User.objects.get(email=email)
+        if user:
+            password = secrets.token_hex(10)
+            user.set_password(password)
+            user.save()
+        send_mail(
+            subject='Смена пароля',
+            message=f'Ваш новый пароль: {password}',
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[user.email]
+        )
+        return redirect(reverse('users:login'))
+
+
+# def recovery_pass(request):
+#     chars = '+-/*!&$#?=@<>abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+#     new_password = ''
+#     for i in range(10):
+#         new_password += random.choice(chars)
+#
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         user = get_object_or_404(User, email=email)
+#         password = new_password
+#         user.set_password(password)
+#         user.save()
+#         send_mail(
+#             subject='Восстановление пароля',
+#             message=f'Сгенерирован новый пароль: {user.password}',
+#             from_email=EMAIL_HOST_USER,
+#             recipient_list=[user.email]
+#         )
+#         return redirect(reverse('users:login'))
+#     return render(request, 'users/reset_password.html')
+
+
