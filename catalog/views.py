@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.http import request
 from django.shortcuts import render, get_object_or_404
@@ -7,7 +8,7 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 from pytils.translit import slugify
 from django.core.mail import send_mail
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Blog, Version
 
 
@@ -52,6 +53,15 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
+    def get_form_class(self):
+        user = self.request.user
+
+        if user == self.object.owner:
+            return ProductForm
+        if user.has_perm('catalog.can_edit_published') and user.has_perm(
+            'catalog.can_edit_description') and user.has_perm('catalog.can_edit_category'):
+            return ProductModeratorForm
+        raise PermissionDenied
 
 # def product_list(request):
 #     products = Product.objects.all()
