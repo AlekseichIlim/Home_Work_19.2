@@ -37,6 +37,11 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ('name', 'price')
+        permissions = [
+            ('can_edit_published', 'Can edit is_published'),
+            ('can_edit_description', 'Can edit description'),
+            ('can_edit_category', 'Can edit category'),
+        ]
 
 
 class Blog(models.Model):
