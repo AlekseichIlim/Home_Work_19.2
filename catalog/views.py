@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Blog, Version, Category
+from catalog.services import get_category_from_cache
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -178,3 +179,11 @@ class BlogDeleteView(DeleteView):
 
 class CategoryListView(ListView):
     model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category_list'] = get_category_from_cache()
+        return context_data
+
+    # def get_queryset(self):
+    #     return get_category_from_cache()
