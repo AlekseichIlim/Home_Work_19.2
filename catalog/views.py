@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Blog, Version, Category
-from catalog.services import get_category_from_cache
+from catalog.services import get_category_from_cache, get_product_from_cache
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -76,7 +76,7 @@ class ProductListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
-        products = self.get_queryset(*args, **kwargs)
+        products = get_product_from_cache()
         for product in products:
             version = Version.objects.filter(product=product)
             active_version = version.filter(sign_version=True)
