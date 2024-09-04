@@ -9,7 +9,7 @@ from pytils.translit import slugify
 from django.core.mail import send_mail
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
-from catalog.models import Product, Blog, Version
+from catalog.models import Product, Blog, Version, Category
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -174,3 +174,7 @@ class BlogUpdateView(UpdateView):
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('catalog:blog_list')
+
+
+class CategoryListView(ListView):
+    model = Category
