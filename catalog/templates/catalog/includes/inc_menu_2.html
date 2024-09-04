@@ -2,6 +2,7 @@
     <h5>Меню</h5>
     <ul class="list-unstyled text-small">
         <li><a class="text-muted" href="{% url 'catalog:product_list' %}">Главная</a></li>
+        <li><a class="text-muted" href="{% url 'catalog:category_list' %}">Категории</a></li>
         <li><a class="text-muted" href="{% url 'catalog:blog_list' %}">Блог</a></li>
         {% if user.is_authenticated %}
             <li><a class="text-muted" href="{% url 'users:logout' %}">Выйти</a></li>
