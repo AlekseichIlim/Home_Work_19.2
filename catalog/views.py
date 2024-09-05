@@ -9,7 +9,8 @@ from pytils.translit import slugify
 from django.core.mail import send_mail
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
-from catalog.models import Product, Blog, Version
+from catalog.models import Product, Blog, Version, Category
+from catalog.services import get_category_from_cache, get_product_from_cache
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -75,7 +76,7 @@ class ProductListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
-        products = self.get_queryset(*args, **kwargs)
+        products = get_product_from_cache()
         for product in products:
             version = Version.objects.filter(product=product)
             active_version = version.filter(sign_version=True)
@@ -174,3 +175,15 @@ class BlogUpdateView(UpdateView):
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('catalog:blog_list')
+
+
+class CategoryListView(ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category_list'] = get_category_from_cache()
+        return context_data
+
+    # def get_queryset(self):
+    #     return get_category_from_cache()
